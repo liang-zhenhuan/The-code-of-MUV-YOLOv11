@@ -1,0 +1,36 @@
+
+
+# Parameters
+nc: 3 # number of classes
+
+backbone:
+  # [from, repeats, module, args]
+  - [-1, 1, Conv, [64, 3, 2]]
+  - [-1, 1, Conv, [128, 3, 2]]
+  - [-1, 2, DEABlock, []]
+  - [-1, 1, Conv, [256, 3, 2]]
+  - [-1, 4, GDR, [256,True]]
+  - [-1, 1, Conv, [512, 3, 2]]
+  - [-1, 4, GDR, [512,True]]
+  - [-1, 1, Conv, [1024, 3, 2]]
+  - [-1, 2, GDR, [1024,True]]
+  - [-1, 1, SPPF-DW, [1024, 7]]
+
+head:
+  - [[3, 7, 5], 1, SDI-R, []]
+  - [[4, 9, 6], 1, SDI-R, []]
+
+  - [[-1, -2], 1, Concat, [1]]
+  - [-1, 1, RepVGGBlocks, []]
+
+  - [-1, 1, A-CDFA, [512, 2]]
+  - [[-1, 4], 1, Concat, [1]]
+
+  - [-1, 1, Conv, [256, 3]]
+  - [13, 1, Conv, [512, 3]]
+  - [13, 1, Conv, [1024, 3, 2]]
+
+  - [[16, 17, 18], 1, Detect, [nc]]
+
+
+
